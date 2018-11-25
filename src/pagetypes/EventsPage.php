@@ -75,8 +75,8 @@ class EventsPage extends Page
     {
         $fields = parent::getCMSFields();
 
-        // Requirements::javascript('client/js/eventfields.js');
-        // Requirements::css('client/css/eventfields.css');
+        Requirements::javascript('events/client/js/eventfields.js');
+        Requirements::css('events/client/css/eventfields.css');
 
         $dateTimeConfig = GridFieldConfig_RecordEditor::create();
 
