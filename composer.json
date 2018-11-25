@@ -1,0 +1,36 @@
+{
+    "name": "voyage/events",
+    "type": "silverstripe-vendormodule",
+    "description": "Events module for SilverStripe CMS",
+    "keywords": [
+        "silverstripe",
+        "cms",
+        "events"
+    ],
+    "authors": [
+        {
+            "name": "Voyage",
+            "homepage": "http://voyage.studio"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "^4.0@dev",
+        "silverstripe/vendor-plugin": "^1.0",
+        "symbiote/silverstripe-gridfieldextensions": "^3.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "extra": {
+        "expose": [
+            "client"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "Voyage\\Events\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
