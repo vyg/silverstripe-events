@@ -5,6 +5,7 @@ namespace Voyage\Events\Pages;
 use Page;
 use Voyage\Events\Helpers\sfDate;
 use Voyage\Events\Models\EventDateTime;
+use Voyage\Events\Models\RecurringException;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ArrayList;
@@ -57,7 +58,8 @@ class EventsPage extends Page
     * @var array
     */
     private static $has_many = [
-        'DateTimes' => EventDateTime::class,
+        'DateTimes'  => EventDateTime::class,
+        'Exceptions' => RecurringException::class,
     ];
 
     /**
@@ -142,7 +144,13 @@ class EventsPage extends Page
                     ))->setHasEmptyDefault(true),
                     DropdownField::create('MonthlyDayOfWeek', '', DataList::create(RecurringDayOfWeek::class)->map('Value', 'Title'))->setHasEmptyDefault(true),
                     LabelField::create($name = "ofthemonth", $title = _t("EventsPage.OFTHEMONTH", " of the month."))
-                )
+                ),
+                GridField::create(
+                    'Exceptions',
+                    'Any exceptions to this pattern? Add the dates below.',
+                    $this->Exceptions(),
+                    GridFieldConfig_RecordEditor::create()
+                ),
             ]
         );
 

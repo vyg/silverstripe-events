@@ -7,6 +7,7 @@ namespace Voyage\Events\Models;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
+use Voyage\Events\Pages\EventsPage;
 
 class RecurringException extends DataObject {
     private static $table_name = 'RecurringException';
@@ -26,11 +27,9 @@ class RecurringException extends DataObject {
     public function getCMSFields() {
         $fields = parent::getCMSFields();
 
-        DateField::set_default_config('showcalendar', true);
-
         $fields->addFieldToTab(
             'Root.Main',
-            new DateField('ExceptionDate', _t('CalendarDateTime.EXCEPTIONDATE','Exception Date'))
+            new DateField('ExceptionDate', _t('RecurringException.EXCEPTIONDATE','Exception Date'))
         );
 
         return $fields;
@@ -38,7 +37,7 @@ class RecurringException extends DataObject {
 
     public function summaryFields() {
         return [
-            'FormattedExceptionDate' => _t('Calendar.EXCEPTIONDATE','Exception date'),
+            'FormattedExceptionDate' => _t('RecurringException.EXCEPTIONDATE','Exception Date'),
         ];
     }
 
