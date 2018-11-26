@@ -9,6 +9,9 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
 
 class RecurringException extends DataObject {
+    private static $table_name = 'RecurringException';
+    private static $singular_name = 'RecurringException';
+    private static $plural_name = 'RecurringExceptions';
 
     private static $db = [
         'ExceptionDate' => 'Date',
