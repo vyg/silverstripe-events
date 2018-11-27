@@ -1,4 +1,7 @@
 <?php
+/**
+ * Test events overview page
+ */
 namespace Voyage\Events\Tests\PageTypes;
 
 use SilverStripe\Dev\SapphireTest;
@@ -11,6 +14,10 @@ class EventsOverviewPageTest extends SapphireTest
 {
     protected static $fixture_file = 'fixtures/EventsOverviewPageTest.yml';
 
+    /**
+     * Test that event dates are generated correctly for events on a daily
+     * interval
+     */
     public function testShouldReturnDailyRecurringDates()
     {
         $event = $this->objFromFixture(EventsPage::class, 'daily');
@@ -21,6 +28,10 @@ class EventsOverviewPageTest extends SapphireTest
         $this->assertEquals('2018-11-07', $eventDates[1]->StartDate);
     }
 
+    /**
+     * Test that event dates are generated correctly for events on a weekly
+     * interval
+     */
     public function testShouldReturnWeeklyRecurringDates()
     {
         $event = $this->objFromFixture(EventsPage::class, 'weekly');
@@ -31,6 +42,10 @@ class EventsOverviewPageTest extends SapphireTest
         $this->assertEquals('2018-11-02', $eventDates[0]->StartDate);
     }
 
+    /**
+     * Test that event dates are generated correctly for events on a monthly
+     * interval for selected days of the month
+     */
     public function testShouldReturnMonthlyRecurringDates()
     {
         $event = $this->objFromFixture(EventsPage::class, 'monthly');
@@ -41,6 +56,9 @@ class EventsOverviewPageTest extends SapphireTest
         $this->assertEquals('2018-11-10', $eventDates[0]->StartDate);
     }
 
+    /**
+     * Test that exclusions are applied for daily recurring events
+     */
     public function testShouldExcludeExceptionsForDailyEvents()
     {
         $event = $this->objFromFixture(EventsPage::class, 'daily');
@@ -59,6 +77,9 @@ class EventsOverviewPageTest extends SapphireTest
         $this->assertNotContains('2018-11-25', $eventDateStrings);
     }
 
+    /**
+     * Test that exclusions are applied for weekly recurring events
+     */
     public function testShouldExcludeExceptionsForWeeklyEvents()
     {
         $event = $this->objFromFixture(EventsPage::class, 'weekly');
@@ -73,6 +94,9 @@ class EventsOverviewPageTest extends SapphireTest
         $this->assertNotContains('2018-11-16', $eventDateStrings);
     }
 
+    /**
+     * Test that exclusions are applied for monthly recurring events
+     */
     public function testShouldExcludeExceptionsForMonthlyEvents()
     {
         $event = $this->objFromFixture(EventsPage::class, 'monthly');
