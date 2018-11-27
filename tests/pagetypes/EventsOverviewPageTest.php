@@ -57,6 +57,20 @@ class EventsOverviewPageTest extends SapphireTest
     }
 
     /**
+     * Test that event dates are generated correctly for events on a monthly
+     * interval for selected days of the month
+     */
+    public function testShouldReturnMonthlyByDayOFWeekRecurringDates()
+    {
+        $event = $this->objFromFixture(EventsPage::class, 'monthly_weekday');
+        $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
+        $overview = $this->objFromFixture(EventsOverviewPage::class, 'monthly_weekday_overview');
+        $eventDates = $overview->getEventList('2018-11-01', $end = '2019-03-31');
+        $this->assertEquals(3, count($eventDates));
+        $this->assertEquals('2018-11-14', $eventDates[0]->StartDate);
+    }
+
+    /**
      * Test that exclusions are applied for daily recurring events
      */
     public function testShouldExcludeExceptionsForDailyEvents()

@@ -25,12 +25,17 @@ Voyage\Events\Models\EventDateTime:
   three:
     StartDate: "2018-11-01"
     LastStartDate: "2018-12-31"
+  four:
+    StartDate: "2018-11-01"
+    LastStartDate: "2019-01-31"
 Voyage\Events\Pages\EventsOverviewPage:
   daily_overview:
     Title: Recurring daily overview
   weekly_overview:
     Title: Recurring weekly overview
   monthly_overview:
+    Title: Recurring monthly overview
+  monthly_weekday_overview:
     Title: Recurring monthly overview
 Voyage\Events\Pages\EventsPage:
   daily:
@@ -57,3 +62,13 @@ Voyage\Events\Pages\EventsPage:
     MonthlyRecursionType1: 1
     RecurringDaysOfMonth: =>Voyage\Events\Models\RecurringDayOfMonth.tenth,=>Voyage\Events\Models\RecurringDayOfMonth.fifteenth
     Parent: =>Voyage\Events\Pages\EventsOverviewPage.monthly_overview
+  monthly_weekday:
+    Title: Recurring monthly on a day of the week
+    DateTimes: =>Voyage\Events\Models\EventDateTime.four
+    Recursion: true
+    CustomRecursionType: 3
+    MonthlyInterval: 1
+    MonthlyRecursionType2: 1
+    MonthlyIndex: 2
+    MonthlyDayOfWeek: 3
+    Parent: =>Voyage\Events\Pages\EventsOverviewPage.monthly_weekday_overview
