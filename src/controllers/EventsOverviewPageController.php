@@ -69,12 +69,12 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
-     * Default view if one month from the current date
+     * Default view of number of configured months from the current date
      */
     protected function setDefaultView()
     {
 		$this->view = "default";
 		$this->startDate = sfDate::getInstance();
-		$this->endDate = sfDate::getInstance()->addMonth(1);
+		$this->endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);
     }
 }

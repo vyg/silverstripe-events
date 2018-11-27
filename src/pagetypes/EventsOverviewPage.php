@@ -5,6 +5,7 @@ namespace Voyage\Events\Pages;
 use Page;
 use Voyage\Events\Helpers\sfDate;
 use Voyage\Events\Models\EventDateTime;
+use SilverStripe\Forms\NumericField;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ArrayList;
 
@@ -16,6 +17,14 @@ class EventsOverviewPage extends Page
     private static $table_name = 'EventsOverviewPage';
 
     private static $reccurring_event_index = 0;
+
+    private static $db = [
+        'DefaultFutureMonths' => 'Int',
+    ];
+
+    private static $defaults = [
+        'DefaultFutureMonths' => '3',
+    ];
 
     /**
      * @var array
@@ -30,6 +39,12 @@ class EventsOverviewPage extends Page
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
+
+        $configuration = _t('EventsOverviewPage.CONFIGURATION','Configuration');
+        $fields->addFieldsToTab("Root.$configuration", [
+            NumericField::create('DefaultFutureMonths', _t('EventsOverviewPage.DEFAULTFUTUREMONTHS','Number number of future months to show in default view'))->addExtraClass('defaultFutureMonths'),
+        ]);
+
         return $fields;
     }
 
