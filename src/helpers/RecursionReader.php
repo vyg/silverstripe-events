@@ -20,8 +20,9 @@ class RecursionReader
     protected $datetimeClass;
     protected $eventClass;
     protected $ts;
-    protected $allowedDaysOfWeek = array();
-    protected $allowedDaysOfMonth = array();
+    protected $allowedDaysOfWeek = [];
+    protected $allowedDaysOfMonth = [];
+    protected $exceptions = [];
 
     public static function difference_in_months($dateObj1, $dateObj2)
     {
@@ -52,6 +53,12 @@ class RecursionReader
                 }
             }
         }
+
+        if($exceptions = $event->Exceptions()) {
+            foreach($exceptions as $exception) {
+                $this->exceptions[] = $exception->ExceptionDate;
+            }
+        }
     }
 
     public function recursionHappensOn($ts)
@@ -61,6 +68,9 @@ class RecursionReader
 
         // Current date is before the recurring event begins.
         if ($objTestDate->get() < $objStartDate->get()) {
+            return false;
+        }
+        if(in_array($objTestDate->date(), $this->exceptions)) {
             return false;
         }
 

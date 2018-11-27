@@ -6,6 +6,11 @@ Voyage\Events\Models\RecurringDayOfMonth:
     Value: 10
   fifteenth:
     Value: 15
+Voyage\Events\Models\RecurringException:
+  forweekly:
+    ExceptionDate: '2018-11-16'
+  formonthly:
+    ExceptionDate: '2018-12-10'
 Voyage\Events\Models\EventDateTime:
   one:
     StartDate: "2018-11-01"
