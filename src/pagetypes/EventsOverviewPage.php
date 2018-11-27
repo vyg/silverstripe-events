@@ -6,6 +6,7 @@ use Page;
 use Voyage\Events\Helpers\sfDate;
 use Voyage\Events\Models\EventDateTime;
 use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ArrayList;
 
@@ -20,10 +21,12 @@ class EventsOverviewPage extends Page
 
     private static $db = [
         'DefaultFutureMonths' => 'Int',
+        'DefaultHeader'       => 'Varchar(150)',
     ];
 
     private static $defaults = [
         'DefaultFutureMonths' => '3',
+        'DefaultHeader'       => 'Upcoming Events',
     ];
 
     /**
@@ -43,6 +46,7 @@ class EventsOverviewPage extends Page
         $configuration = _t('EventsOverviewPage.CONFIGURATION','Configuration');
         $fields->addFieldsToTab("Root.$configuration", [
             NumericField::create('DefaultFutureMonths', _t('EventsOverviewPage.DEFAULTFUTUREMONTHS','Number number of future months to show in default view'))->addExtraClass('defaultFutureMonths'),
+            TextField::create('DefaultHeader', _t('EventsOverviewPage.DEFAULTHEADER','Default header (displays when no date range has been selected)')),
         ]);
 
         return $fields;

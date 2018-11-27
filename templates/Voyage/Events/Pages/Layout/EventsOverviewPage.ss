@@ -1,5 +1,6 @@
 <h2>$Title</h2>
 
+<% include EventsHeader %>
 <% if Events %>
 <div id="event-calendar-events">
   <% include EventList %>

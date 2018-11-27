@@ -77,6 +77,17 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
+     * Get the header text for the current view
+     *
+     * @return string
+     */
+    public function EventsHeader()
+    {
+        $method = 'get' . ucfirst($this->view) . 'EventsHeader';
+        return $this->$method();
+    }
+
+    /**
      * Get start of date range as a string
      *
      * @return string|null
@@ -152,5 +163,25 @@ class EventsOverviewPageController extends PageController
         $this->startDate = sfDate::getInstance($startOfMonth);
         $this->endDate = sfDate::getInstance($startOfMonth)->finalDayOfMonth();
         $this->view = 'month';
+    }
+
+    /**
+     * Get the default header text
+     *
+     * @return string
+     */
+    protected function getDefaultEventsHeader()
+    {
+        return $this->DefaultHeader;
+    }
+
+    /**
+     * Get the month view header text
+     *
+     * @return string
+     */
+    protected function getMonthEventsHeader()
+    {
+        return $this->startDate->format('F Y');
     }
 }
