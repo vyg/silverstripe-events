@@ -164,4 +164,20 @@ class EventDateTime extends DataObject
     {
         return $this->obj('EndTime')->Format('h:mm a');
     }
+
+    /**
+     * Format start and end time into a range
+     *
+     * @return string
+     */
+    public function getFormattedTimeRange()
+    {
+        return implode(
+            ' - ',
+            array_filter([
+                $this->getFormattedStartTime(),
+                $this->getFormattedEndTime(),
+            ])
+        );
+    }
 }
