@@ -13,11 +13,16 @@ use Voyage\Events\Helpers\sfDate;
  */
 class EventsOverviewPageController extends PageController
 {
+    private static $allowed_actions = [
+        'index',
+        'show',
+    ];
+
     /**
      * Start date for event range
      * @var Date
      */
-	protected $startDate;
+    protected $startDate;
 
     /**
      * End date for event range
@@ -26,16 +31,39 @@ class EventsOverviewPageController extends PageController
     protected $endDate;
 
     /**
+     * Set view mode. Used for switching header.
+     *
+     * @var string
+     */
+    protected $view = 'default';
+
+    /**
+     * Map lengths of date parameters to view types
+     */
+    protected $viewDateLengthMap = [
+        '7' => 'month',
+    ];
+
+    /**
      * @param HTTPRequest $request
      * @return html
      */
     public function index(HTTPRequest $request)
     {
-        $date = $this->setDefaultView();
+        $this->setDefaultView();
 
-        return $this->customise(new ArrayData([
-            'EventStartDate' => $date ? DBDate::create('EventStartDate')->setValue($date) : null
-        ]));
+        return $this->respond();
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @return html
+     */
+    public function show(HTTPRequest $request)
+    {
+        $this->setCustomView($request);
+
+        return $this->respond();
     }
 
     /**
@@ -69,12 +97,60 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
+     * Default response, no customisation
+     *
+     * @return array
+     */
+    protected function respond() {
+        return[];
+    }
+
+    /**
      * Default view of number of configured months from the current date
      */
-    protected function setDefaultView()
+    protected function setDefaultView($_ = null)
     {
-		$this->view = "default";
-		$this->startDate = sfDate::getInstance();
-		$this->endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);
+        $this->startDate = sfDate::getInstance();
+        $this->endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);
+    }
+
+    /**
+     * Set a custom view based on date
+     *
+     * @param HTTPRequest
+     */
+    protected function setCustomView(HTTPRequest $request)
+    {
+        $date = $request->param('ID');
+        $this->view = $this->getViewType(strlen($date), 'default');
+        $method = 'set' . ucfirst($this->view) . 'View';
+        return $this->$method($date);
+    }
+
+    /**
+     * Get type of view from date length map
+     *
+     * @param  int    $index     Index into map
+     * @param  string $default   Deault value to return if $index does note exist
+     *
+     * @return string
+     */
+    protected function getViewType($index, $default) {
+        return (isset($this->viewDateLengthMap[$index]))
+            ? $this->viewDateLengthMap[$index]
+            : $default;
+    }
+
+    /**
+     * Set the view for the month of the given date
+     *
+     * @param string $date  Month in YYY-MM format
+     */
+    protected function setMonthView($date)
+    {
+        $startOfMonth = "{$date}-01";
+        $this->startDate = sfDate::getInstance($startOfMonth);
+        $this->endDate = sfDate::getInstance($startOfMonth)->finalDayOfMonth();
+        $this->view = 'month';
     }
 }
