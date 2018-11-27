@@ -24,8 +24,15 @@ class EventsOverviewPageTest extends SapphireTest
         $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $overview = $this->objFromFixture(EventsOverviewPage::class, 'daily_overview');
         $eventDates = $overview->getEventList('2018-11-01', $end = '2018-12-31');
-        $this->assertEquals(5, count($eventDates));
-        $this->assertEquals('2018-11-07', $eventDates[1]->StartDate);
+        $expected = [
+            '2018-11-01',
+            '2018-11-07',
+            '2018-11-13',
+            '2018-11-19',
+            '2018-11-25',
+        ];
+        $eventDateStrings = array_map(function($ev) { return $ev->StartDate; }, $eventDates->toArray());
+        $this->assertEquals($expected, $eventDateStrings);
     }
 
     /**
@@ -38,8 +45,15 @@ class EventsOverviewPageTest extends SapphireTest
         $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $overview = $this->objFromFixture(EventsOverviewPage::class, 'weekly_overview');
         $eventDates = $overview->getEventList('2018-11-01', $end = '2018-12-31');
-        $this->assertEquals(5, count($eventDates));
-        $this->assertEquals('2018-11-02', $eventDates[0]->StartDate);
+        $expected = [
+            '2018-11-02',
+            '2018-11-16',
+            '2018-11-30',
+            '2018-12-14',
+            '2018-12-28',
+        ];
+        $eventDateStrings = array_map(function($ev) { return $ev->StartDate; }, $eventDates->toArray());
+        $this->assertEquals($expected, $eventDateStrings);
     }
 
     /**
@@ -52,8 +66,14 @@ class EventsOverviewPageTest extends SapphireTest
         $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $overview = $this->objFromFixture(EventsOverviewPage::class, 'monthly_overview');
         $eventDates = $overview->getEventList('2018-11-01', $end = '2018-12-31');
-        $this->assertEquals(4, count($eventDates));
-        $this->assertEquals('2018-11-10', $eventDates[0]->StartDate);
+        $expected = [
+            '2018-11-10',
+            '2018-11-15',
+            '2018-12-10',
+            '2018-12-15',
+        ];
+        $eventDateStrings = array_map(function($ev) { return $ev->StartDate; }, $eventDates->toArray());
+        $this->assertEquals($expected, $eventDateStrings);
     }
 
     /**
@@ -66,8 +86,13 @@ class EventsOverviewPageTest extends SapphireTest
         $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $overview = $this->objFromFixture(EventsOverviewPage::class, 'monthly_weekday_overview');
         $eventDates = $overview->getEventList('2018-11-01', $end = '2019-03-31');
-        $this->assertEquals(3, count($eventDates));
-        $this->assertEquals('2018-11-14', $eventDates[0]->StartDate);
+        $expected = [
+            '2018-11-14',
+            '2018-12-12',
+            '2019-01-09',
+        ];
+        $eventDateStrings = array_map(function($ev) { return $ev->StartDate; }, $eventDates->toArray());
+        $this->assertEquals($expected, $eventDateStrings);
     }
 
     /**
@@ -85,10 +110,13 @@ class EventsOverviewPageTest extends SapphireTest
         $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $overview = $this->objFromFixture(EventsOverviewPage::class, 'daily_overview');
         $eventDates = $overview->getEventList('2018-11-01', $end = '2018-12-31');
-        $this->assertEquals(3, count($eventDates));
+        $expected = [
+            '2018-11-01',
+            '2018-11-07',
+            '2018-11-19',
+        ];
         $eventDateStrings = array_map(function($ev) { return $ev->StartDate; }, $eventDates->toArray());
-        $this->assertNotContains('2018-11-13', $eventDateStrings);
-        $this->assertNotContains('2018-11-25', $eventDateStrings);
+        $this->assertEquals($expected, $eventDateStrings);
     }
 
     /**
@@ -103,9 +131,14 @@ class EventsOverviewPageTest extends SapphireTest
         $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $overview = $this->objFromFixture(EventsOverviewPage::class, 'weekly_overview');
         $eventDates = $overview->getEventList('2018-11-01', $end = '2018-12-31');
-        $this->assertEquals(4, count($eventDates));
+        $expected = [
+            '2018-11-02',
+            '2018-11-30',
+            '2018-12-14',
+            '2018-12-28',
+        ];
         $eventDateStrings = array_map(function($ev) { return $ev->StartDate; }, $eventDates->toArray());
-        $this->assertNotContains('2018-11-16', $eventDateStrings);
+        $this->assertEquals($expected, $eventDateStrings);
     }
 
     /**
@@ -120,8 +153,12 @@ class EventsOverviewPageTest extends SapphireTest
         $event->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $overview = $this->objFromFixture(EventsOverviewPage::class, 'monthly_overview');
         $eventDates = $overview->getEventList('2018-11-01', $end = '2018-12-31');
-        $this->assertEquals(3, count($eventDates));
+        $expected = [
+            '2018-11-10',
+            '2018-11-15',
+            '2018-12-15',
+        ];
         $eventDateStrings = array_map(function($ev) { return $ev->StartDate; }, $eventDates->toArray());
-        $this->assertNotContains('2018-12-10', $eventDateStrings);
+        $this->assertEquals($expected, $eventDateStrings);
     }
 }
