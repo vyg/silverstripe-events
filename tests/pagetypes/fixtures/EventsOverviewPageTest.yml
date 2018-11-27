@@ -1,0 +1,74 @@
+Voyage\Events\Models\RecurringDayOfWeek:
+  friday:
+    Value: 5
+Voyage\Events\Models\RecurringDayOfMonth:
+  tenth:
+    Value: 10
+  fifteenth:
+    Value: 15
+Voyage\Events\Models\RecurringException:
+  fordaily1:
+    ExceptionDate: '2018-11-13'
+  fordaily2:
+    ExceptionDate: '2018-11-25'
+  forweekly:
+    ExceptionDate: '2018-11-16'
+  formonthly:
+    ExceptionDate: '2018-12-10'
+Voyage\Events\Models\EventDateTime:
+  one:
+    StartDate: "2018-11-01"
+    LastStartDate: "2018-11-30"
+  two:
+    StartDate: "2018-11-01"
+    LastStartDate: "2018-12-31"
+  three:
+    StartDate: "2018-11-01"
+    LastStartDate: "2018-12-31"
+  four:
+    StartDate: "2018-11-01"
+    LastStartDate: "2019-01-31"
+Voyage\Events\Pages\EventsOverviewPage:
+  daily_overview:
+    Title: Recurring daily overview
+  weekly_overview:
+    Title: Recurring weekly overview
+  monthly_overview:
+    Title: Recurring monthly overview
+  monthly_weekday_overview:
+    Title: Recurring monthly overview
+Voyage\Events\Pages\EventsPage:
+  daily:
+    Title: Recurring daily
+    DateTimes: =>Voyage\Events\Models\EventDateTime.one
+    Recursion: true
+    CustomRecursionType: 1
+    DailyInterval: 6
+    Parent: =>Voyage\Events\Pages\EventsOverviewPage.daily_overview
+  weekly:
+    Title: Recurring weekly
+    DateTimes: =>Voyage\Events\Models\EventDateTime.two
+    Recursion: true
+    CustomRecursionType: 2
+    WeeklyInterval: 2
+    RecurringDaysOfWeek: =>Voyage\Events\Models\RecurringDayOfWeek.friday
+    Parent: =>Voyage\Events\Pages\EventsOverviewPage.weekly_overview
+  monthly:
+    Title: Recurring monthly
+    DateTimes: =>Voyage\Events\Models\EventDateTime.three
+    Recursion: true
+    CustomRecursionType: 3
+    MonthlyInterval: 1
+    MonthlyRecursionType1: 1
+    RecurringDaysOfMonth: =>Voyage\Events\Models\RecurringDayOfMonth.tenth,=>Voyage\Events\Models\RecurringDayOfMonth.fifteenth
+    Parent: =>Voyage\Events\Pages\EventsOverviewPage.monthly_overview
+  monthly_weekday:
+    Title: Recurring monthly on a day of the week
+    DateTimes: =>Voyage\Events\Models\EventDateTime.four
+    Recursion: true
+    CustomRecursionType: 3
+    MonthlyInterval: 1
+    MonthlyRecursionType2: 1
+    MonthlyIndex: 2
+    MonthlyDayOfWeek: 3
+    Parent: =>Voyage\Events\Pages\EventsOverviewPage.monthly_weekday_overview
