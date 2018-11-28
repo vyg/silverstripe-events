@@ -43,11 +43,13 @@ class EventsOverviewPageController extends PageController
     protected $view = 'default';
 
     /**
-     * Map lengths of date parameters to view types
+     * Map date parameters to view types
+     *
+     * @var array
      */
-    protected $viewDateLengthMap = [
-        '5' => 'today',
-        '7' => 'month',
+    protected $viewTypeMap = [
+        'today'   => 'today',
+        'xxxx-xx' => 'month',
     ];
 
     /**
@@ -172,23 +174,45 @@ class EventsOverviewPageController extends PageController
     protected function setCustomView(HTTPRequest $request)
     {
         $date = $request->param('ID');
-        $this->view = $this->getViewType(strlen($date), 'default');
+        $this->view = $this->getViewType($date, 'default');
         $method = 'set' . ucfirst($this->view) . 'View';
         return $this->$method($date);
     }
 
     /**
-     * Get type of view from date length map
+     * Get type of view from map
      *
      * @param  int    $index     Index into map
-     * @param  string $default   Deault value to return if $index does note exist
+     * @param  string $default   Deault value to return if $index does not exist
      *
      * @return string
      */
     public function getViewType($index, $default) {
-        return (isset($this->viewDateLengthMap[$index]))
-            ? $this->viewDateLengthMap[$index]
-            : $default;
+        $type = $default;
+
+        if (isset($this->viewTypeMap[$index])) {
+            $type = $this->viewTypeMap[$index];
+        } else {
+            $dateMask = $this->dateMask($index);
+            if (isset($this->viewTypeMap[$dateMask])) {
+                $type = $this->viewTypeMap[$dateMask];
+            }
+        }
+
+        return $type;
+    }
+
+    /**
+     * Convert a date format string into a mask.
+     *
+     * E.g. 2018-11-15 => xxxx-xx-xx
+     *
+     * @param  string $date
+     *
+     * @return string
+     */
+    protected function dateMask($date) {
+        return preg_replace('/[0-9]/', 'x', $date);
     }
 
     /**
@@ -254,7 +278,7 @@ class EventsOverviewPageController extends PageController
      */
     protected function getTodayEventsHeader()
     {
-        return $this->startDate->format('d F Y');
+        return $this->startDate->format('j F Y');
     }
 
     /**
