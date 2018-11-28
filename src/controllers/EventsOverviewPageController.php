@@ -5,6 +5,10 @@ namespace Voyage\Events\Pages;
 use PageController;
 use SilverStripe\View\ArrayData;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\GroupedDropdownField;
 use SilverStripe\ORM\FieldType\DBDate;
 use Voyage\Events\Helpers\sfDate;
 
@@ -16,6 +20,7 @@ class EventsOverviewPageController extends PageController
     private static $allowed_actions = [
         'index',
         'show',
+        'MonthJumpForm',
     ];
 
     /**
@@ -85,6 +90,43 @@ class EventsOverviewPageController extends PageController
     {
         $method = 'get' . ucfirst($this->view) . 'EventsHeader';
         return $this->$method();
+    }
+
+    /**
+     * Form for jumping to a particular month
+     *
+     * @return Form
+     */
+    public function MonthJumpForm() {
+        $this->setCustomView($this->getRequest());
+        $monthOptions = $this->buildMonthOptions();
+        $form = new Form(
+            $this,
+            "MonthJumpForm",
+            new FieldList (
+                $month = new GroupedDropdownField(_t('EventsOverviewPage.MONTH', 'Month'), '', $monthOptions)
+            ),
+            new FieldList (
+                new FormAction('doMonthJump', _t('EventsOverviewPage.JUMP', 'Go'))
+            )
+        );
+
+        if($this->startDate) {
+            $month->setValue($this->startDate->format('Y-m'));
+        }
+        else {
+            $month->setValue(date('Y-m'));
+        }
+        return $form;
+    }
+
+    /**
+     * Perform the action to jump to a month
+     *
+     * @return HTTPResponse
+     */
+    public function doMonthJump($data, $form) {
+        return $this->redirect($this->Link('show').'/' . $data['Month']);
     }
 
     /**
@@ -183,5 +225,31 @@ class EventsOverviewPageController extends PageController
     protected function getMonthEventsHeader()
     {
         return $this->startDate->format('F Y');
+    }
+
+    /**
+     * Build an associative array of years and months for use in a
+     * GroupedDropDownList
+     *
+     * @return array
+     */
+    protected function buildMonthOptions()
+    {
+        $baseDate = sfDate::getInstance();
+        $years = range($baseDate->subtractYear(1)->format('Y'), $baseDate->addYear(3)->format('Y'));
+        $monthOptions = [];
+        $months = range(1, 12);
+        array_walk($years, function($year) use(&$monthOptions, $months) {
+            $monthsByYear = [];
+            array_walk(
+                $months,
+                function($month) use($year, &$monthsByYear) {
+                    $date = $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT);
+                    $monthsByYear[$date] = sfDate::getInstance($date)->format('F') . ' ' . $year;
+                }
+            );
+            $monthOptions[$year] = $monthsByYear;
+        });
+        return $monthOptions;
     }
 }
