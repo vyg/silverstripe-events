@@ -3,13 +3,13 @@
 namespace Voyage\Events\Pages;
 
 use PageController;
-use SilverStripe\View\ArrayData;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GroupedDropdownField;
 use SilverStripe\ORM\FieldType\DBDate;
+use SilverStripe\View\ArrayData;
 use Voyage\Events\Helpers\sfDate;
 
 /**
@@ -138,6 +138,26 @@ class EventsOverviewPageController extends PageController
     public function getView()
     {
         return $this->view;
+    }
+
+    /**
+     * Build and render jump links for current period if applicable
+     *
+     * @return string
+     */
+    public function getEventJumpLinks()
+    {
+        if ($this->HasJumpLinks()) {
+            $method = 'get' . ucfirst($this->view) . 'JumpLinks';
+            list($prevLink, $prevTitle, $nextLink, $nextTitle) = $this->$method();
+            $linkData = new ArrayData([
+                'PrevLink'  => $prevLink,
+                'PrevTitle' => $prevTitle,
+                'NextLink'  => $nextLink,
+                'NextTitle' => $nextTitle,
+            ]);
+            return $linkData->renderWith('EventsJumpLinks');
+        }
     }
 
     /**
@@ -306,7 +326,25 @@ class EventsOverviewPageController extends PageController
     {
         $this->startDate = sfDate::getInstance($startDate);
         $this->endDate = sfDate::getInstance($endDate);
-        $this->view = 'range';
+        $this->setRangeViewType();
+    }
+
+    /**
+     * If the range matches a day, week or month we set the view type appropriately
+     */
+    protected function setRangeViewType()
+    {
+        if ($this->startDate->date() == $this->endDate->date()) {
+            $this->view = 'day';
+        } elseif (($this->startDate->date() == sfDate::getInstance($this->startDate)->firstDayOfWeek()->date())
+                    && ($this->endDate->date() == sfDate::getInstance($this->startDate)->finalDayOfWeek()->date())) {
+            $this->view = 'week';
+        } elseif (($this->startDate->date() == sfDate::getInstance($this->startDate)->firstDayOfMonth()->date())
+                    && ($this->endDate->date() == sfDate::getInstance($this->startDate)->finalDayOfMonth()->date())) {
+            $this->view = 'month';
+        } else {
+            $this->view = 'range';
+        }
     }
 
     /**
@@ -360,6 +398,67 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
+     * Get the jump links for previous and next months
+     *
+     * @return array
+     */
+    protected function getMonthJumpLinks()
+    {
+        $prevMonth = sfDate::getInstance($this->startDate)->subtractMonth();
+        $nextMonth = sfDate::getInstance($this->startDate)->addMonth();
+        return [
+            self::join_links($this->Link('show'), $prevMonth->format('Y-m-d'), sfDate::getInstance($prevMonth)->finalDayOfMonth()->format('Y-m-d')),
+            _t('EventsOverviewPage.PREVMONTH', 'Previous month'),
+            self::join_links($this->Link('show'), $nextMonth->format('Y-m-d'), sfDate::getInstance($nextMonth)->finalDayOfMonth()->format('Y-m-d')),
+            _t('EventsOverviewPage.NEXTMONTH', 'Next month'),
+        ];
+    }
+
+    /**
+     * Get the jump links for previous and next weeks
+     *
+     * @return array
+     */
+    protected function getWeekJumpLinks()
+    {
+        $prevWeek = sfDate::getInstance($this->startDate)->subtractWeek();
+        $nextWeek = sfDate::getInstance($this->startDate)->addWeek();
+        return [
+            self::join_links($this->Link('show'), $prevWeek->format('Y-m-d'), sfDate::getInstance($prevWeek)->finalDayOfWeek()->format('Y-m-d')),
+            _t('EventsOverviewPage.PREVWEEK', 'Previous week'),
+            self::join_links($this->Link('show'), $nextWeek->format('Y-m-d'), sfDate::getInstance($nextWeek)->finalDayOfWeek()->format('Y-m-d')),
+            _t('EventsOverviewPage.NEXTWEEK', 'Next week'),
+        ];
+    }
+
+    /**
+     * Get the jump links for previous and next days
+     *
+     * @return array
+     */
+    protected function getDayJumpLinks()
+    {
+        $prevDay = sfDate::getInstance($this->startDate)->subtractDay();
+        $nextDay = sfDate::getInstance($this->startDate)->addDay();
+        return [
+            self::join_links($this->Link('show'), $prevDay->format('Y-m-d')),
+            _t('EventsOverviewPage.PREVDAY', 'Previous day'),
+            self::join_links($this->Link('show'), $nextDay->format('Y-m-d')),
+            _t('EventsOverviewPage.NEXTDAY', 'Next day'),
+        ];
+    }
+
+    /**
+     * Get the jump links for previous and next days from current day
+     *
+     * @return array
+     */
+    protected function getTodayJumpLinks()
+    {
+        return $this->getDayJumpLinks();
+    }
+
+    /**
      * Get the custom range view header text
      *
      * @return string
@@ -393,5 +492,13 @@ class EventsOverviewPageController extends PageController
             $monthOptions[$year] = $monthsByYear;
         });
         return $monthOptions;
+    }
+
+    /**
+     * Check if the current view type is one that should have jumplinks
+     */
+    protected function hasJumpLinks()
+    {
+        return in_array($this->view, ['day', 'week', 'month', 'today']);
     }
 }

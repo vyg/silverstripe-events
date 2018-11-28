@@ -3,6 +3,7 @@
 <% include EventsHeader %>
 <% include EventsMonthJumper %>
 <% include EventsQuicknav %>
+$EventJumpLinks
 
 <% if Events %>
 <div id="event-overview-events">
