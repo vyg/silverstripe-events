@@ -49,6 +49,8 @@ class EventsOverviewPageController extends PageController
      */
     protected $viewTypeMap = [
         'today'   => 'today',
+        'week'    => 'week',
+        'month'   => 'week',
         'xxxx-xx' => 'month',
     ];
 
@@ -233,10 +235,25 @@ class EventsOverviewPageController extends PageController
      */
     protected function setMonthView($date)
     {
-        $startOfMonth = "{$date}-01";
-        $this->startDate = sfDate::getInstance($startOfMonth);
-        $this->endDate = sfDate::getInstance($startOfMonth)->finalDayOfMonth();
+        if ($date == 'month') {
+            $this->startDate = sfDate::getInstance()->firstDayOfMonth();
+        } else {
+            $this->startDate = sfDate::getInstance("{$date}-01");
+        }
+        $this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
         $this->view = 'month';
+    }
+
+    /**
+     * Set the view for this week
+     *
+     * @param string $_  Not used
+     */
+    protected function setWeekView($_ = null)
+    {
+        $this->startDate = sfDate::getInstance()->firstDayOfWeek();
+        $this->endDate = sfDate::getInstance()->finalDayOfWeek();
+        $this->view = 'week';
     }
 
     /**
@@ -279,6 +296,16 @@ class EventsOverviewPageController extends PageController
     protected function getTodayEventsHeader()
     {
         return $this->startDate->format('j F Y');
+    }
+
+    /**
+     * Get the week view header text
+     *
+     * @return string
+     */
+    protected function getWeekEventsHeader()
+    {
+        return $this->startDate->format('j F Y') . ' - ' . $this->endDate->format('j F Y');
     }
 
     /**
