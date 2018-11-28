@@ -48,10 +48,11 @@ class EventsOverviewPageController extends PageController
      * @var array
      */
     protected $viewTypeMap = [
-        'today'   => 'today',
-        'week'    => 'week',
-        'month'   => 'week',
-        'xxxx-xx' => 'month',
+        'today'      => 'today',
+        'week'       => 'week',
+        'month'      => 'week',
+        'xxxx-xx'    => 'month',
+        'xxxx-xx-xx' => 'day',
     ];
 
     /**
@@ -269,6 +270,18 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
+     * Sedt the view for the given date
+     *
+     * @param string $date  Start date for event list
+     */
+    protected function setDayView($date)
+    {
+        $this->startDate = sfDate::getInstance($date);
+        $this->endDate = sfDate::getInstance($date);
+        $this->view = 'day';
+    }
+
+    /**
      * Get the default header text
      *
      * @return string
@@ -289,6 +302,16 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
+     * Get the week view header text
+     *
+     * @return string
+     */
+    protected function getWeekEventsHeader()
+    {
+        return $this->startDate->format('j F Y') . ' - ' . $this->endDate->format('j F Y');
+    }
+
+    /**
      * Get the today view header text
      *
      * @return string
@@ -299,13 +322,13 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
-     * Get the week view header text
+     * Get the day view header text
      *
      * @return string
      */
-    protected function getWeekEventsHeader()
+    protected function getDayEventsHeader()
     {
-        return $this->startDate->format('j F Y') . ' - ' . $this->endDate->format('j F Y');
+        return $this->startDate->format('j F Y');
     }
 
     /**
