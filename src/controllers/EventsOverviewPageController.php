@@ -177,6 +177,10 @@ class EventsOverviewPageController extends PageController
     protected function setCustomView(HTTPRequest $request)
     {
         $date = $request->param('ID');
+        $otherDate = $request->param('OtherID');
+		if($otherDate && $this->validateFullDate($otherDate)) {
+			return $this->setRangeView($date, $otherDate);
+		}
         $this->view = $this->getViewType($date, 'default');
         $method = 'set' . ucfirst($this->view) . 'View';
         return $this->$method($date);
@@ -216,6 +220,17 @@ class EventsOverviewPageController extends PageController
      */
     protected function dateMask($date) {
         return preg_replace('/[0-9]/', 'x', $date);
+    }
+
+    /**
+     * Validate that a date parameter is in the corrrect format
+     *
+     * @param string $date
+     * @return boolean
+     */
+    protected function validateFullDate($date)
+    {
+        return preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date);
     }
 
     /**
@@ -270,7 +285,7 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
-     * Sedt the view for the given date
+     * Set the view for the given date
      *
      * @param string $date  Start date for event list
      */
@@ -279,6 +294,19 @@ class EventsOverviewPageController extends PageController
         $this->startDate = sfDate::getInstance($date);
         $this->endDate = sfDate::getInstance($date);
         $this->view = 'day';
+    }
+
+    /**
+     * Sedt the view for a custom range
+     *
+     * @param string $startDate  Start date for the range
+     * @param string $endDate    Start date for the range
+     */
+    protected function setRangeView($startDate, $endDate)
+    {
+        $this->startDate = sfDate::getInstance($startDate);
+        $this->endDate = sfDate::getInstance($endDate);
+        $this->view = 'range';
     }
 
     /**
@@ -329,6 +357,16 @@ class EventsOverviewPageController extends PageController
     protected function getDayEventsHeader()
     {
         return $this->startDate->format('j F Y');
+    }
+
+    /**
+     * Get the custom range view header text
+     *
+     * @return string
+     */
+    protected function getRangeEventsHeader()
+    {
+        return $this->startDate->format('j F Y') . ' - ' . $this->endDate->format('j F Y');
     }
 
     /**
