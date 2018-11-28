@@ -46,6 +46,7 @@ class EventsOverviewPageController extends PageController
      * Map lengths of date parameters to view types
      */
     protected $viewDateLengthMap = [
+        '5' => 'today',
         '7' => 'month',
     ];
 
@@ -129,6 +130,11 @@ class EventsOverviewPageController extends PageController
         return $this->redirect($this->Link('show').'/' . $data['Month']);
     }
 
+    public function getView()
+    {
+        return $this->view;
+    }
+
     /**
      * Get start of date range as a string
      *
@@ -159,15 +165,6 @@ class EventsOverviewPageController extends PageController
     }
 
     /**
-     * Default view of number of configured months from the current date
-     */
-    protected function setDefaultView($_ = null)
-    {
-        $this->startDate = sfDate::getInstance();
-        $this->endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);
-    }
-
-    /**
      * Set a custom view based on date
      *
      * @param HTTPRequest
@@ -188,10 +185,21 @@ class EventsOverviewPageController extends PageController
      *
      * @return string
      */
-    protected function getViewType($index, $default) {
+    public function getViewType($index, $default) {
         return (isset($this->viewDateLengthMap[$index]))
             ? $this->viewDateLengthMap[$index]
             : $default;
+    }
+
+    /**
+     * Default view of number of configured months from the current date
+     *
+     * @param string $_  Not used
+     */
+    protected function setDefaultView($_ = null)
+    {
+        $this->startDate = sfDate::getInstance();
+        $this->endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);
     }
 
     /**
@@ -205,6 +213,18 @@ class EventsOverviewPageController extends PageController
         $this->startDate = sfDate::getInstance($startOfMonth);
         $this->endDate = sfDate::getInstance($startOfMonth)->finalDayOfMonth();
         $this->view = 'month';
+    }
+
+    /**
+     * Set the view for today
+     *
+     * @param string $_  Not used
+     */
+    protected function setTodayView($_ = null)
+    {
+        $this->startDate = sfDate::getInstance();
+        $this->endDate = sfDate::getInstance();
+        $this->view = 'today';
     }
 
     /**
@@ -225,6 +245,16 @@ class EventsOverviewPageController extends PageController
     protected function getMonthEventsHeader()
     {
         return $this->startDate->format('F Y');
+    }
+
+    /**
+     * Get the today view header text
+     *
+     * @return string
+     */
+    protected function getTodayEventsHeader()
+    {
+        return $this->startDate->format('d F Y');
     }
 
     /**

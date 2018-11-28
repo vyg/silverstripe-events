@@ -2,6 +2,7 @@
 
 <% include EventsHeader %>
 <% include EventsMonthJumper %>
+<% include EventsQuicknav %>
 
 <% if Events %>
 <div id="event-overview-events">
