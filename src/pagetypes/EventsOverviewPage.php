@@ -3,12 +3,13 @@
 namespace Voyage\Events\Pages;
 
 use Page;
-use Voyage\Events\Helpers\sfDate;
-use Voyage\Events\Models\EventDateTime;
-use SilverStripe\Forms\NumericField;
-use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\Forms\TextField;
+use Voyage\Events\Helpers\sfDate;
+use Voyage\Events\Pages\EventsPage;
+use SilverStripe\Forms\NumericField;
+use Voyage\Events\Models\EventDateTime;
 
 class EventsOverviewPage extends Page
 {
@@ -43,10 +44,10 @@ class EventsOverviewPage extends Page
     {
         $fields = parent::getCMSFields();
 
-        $configuration = _t('EventsOverviewPage.CONFIGURATION','Configuration');
+        $configuration = _t('EventsOverviewPage.CONFIGURATION', 'Configuration');
         $fields->addFieldsToTab("Root.$configuration", [
-            NumericField::create('DefaultFutureMonths', _t('EventsOverviewPage.DEFAULTFUTUREMONTHS','Number number of future months to show in default view'))->addExtraClass('defaultFutureMonths'),
-            TextField::create('DefaultHeader', _t('EventsOverviewPage.DEFAULTHEADER','Default header (displays when no date range has been selected)')),
+            NumericField::create('DefaultFutureMonths', _t('EventsOverviewPage.DEFAULTFUTUREMONTHS', 'Number number of future months to show in default view'))->addExtraClass('defaultFutureMonths'),
+            TextField::create('DefaultHeader', _t('EventsOverviewPage.DEFAULTHEADER', 'Default header (displays when no date range has been selected)')),
         ]);
 
         return $fields;

@@ -8,7 +8,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GroupedDropdownField;
-use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\View\ArrayData;
 use Voyage\Events\Helpers\sfDate;
 
@@ -103,24 +102,24 @@ class EventsOverviewPageController extends PageController
      *
      * @return Form
      */
-    public function MonthJumpForm() {
+    public function MonthJumpForm()
+    {
         $this->setCustomView($this->getRequest());
         $monthOptions = $this->buildMonthOptions();
         $form = new Form(
             $this,
             "MonthJumpForm",
-            new FieldList (
+            new FieldList(
                 $month = new GroupedDropdownField(_t('EventsOverviewPage.MONTH', 'Month'), '', $monthOptions)
             ),
-            new FieldList (
+            new FieldList(
                 new FormAction('doMonthJump', _t('EventsOverviewPage.JUMP', 'Go'))
             )
         );
 
-        if($this->startDate) {
+        if ($this->startDate) {
             $month->setValue($this->startDate->format('Y-m'));
-        }
-        else {
+        } else {
             $month->setValue(date('Y-m'));
         }
         return $form;
@@ -131,7 +130,8 @@ class EventsOverviewPageController extends PageController
      *
      * @return HTTPResponse
      */
-    public function doMonthJump($data, $form) {
+    public function doMonthJump($data, $form)
+    {
         return $this->redirect($this->Link('show').'/' . $data['Month']);
     }
 
@@ -185,7 +185,8 @@ class EventsOverviewPageController extends PageController
      *
      * @return array
      */
-    protected function respond() {
+    protected function respond()
+    {
         return[];
     }
 
@@ -198,9 +199,9 @@ class EventsOverviewPageController extends PageController
     {
         $date = $request->param('ID');
         $otherDate = $request->param('OtherID');
-		if($otherDate && $this->validateFullDate($otherDate)) {
-			return $this->setRangeView($date, $otherDate);
-		}
+        if ($otherDate && $this->validateFullDate($otherDate)) {
+            return $this->setRangeView($date, $otherDate);
+        }
         $this->view = $this->getViewType($date, 'default');
         $method = 'set' . ucfirst($this->view) . 'View';
         return $this->$method($date);
@@ -214,7 +215,8 @@ class EventsOverviewPageController extends PageController
      *
      * @return string
      */
-    public function getViewType($index, $default) {
+    public function getViewType($index, $default)
+    {
         $type = $default;
 
         if (isset($this->viewTypeMap[$index])) {
@@ -238,7 +240,8 @@ class EventsOverviewPageController extends PageController
      *
      * @return string
      */
-    protected function dateMask($date) {
+    protected function dateMask($date)
+    {
         return preg_replace('/[0-9]/', 'x', $date);
     }
 
@@ -480,11 +483,11 @@ class EventsOverviewPageController extends PageController
         $years = range($baseDate->subtractYear(1)->format('Y'), $baseDate->addYear(3)->format('Y'));
         $monthOptions = [];
         $months = range(1, 12);
-        array_walk($years, function($year) use(&$monthOptions, $months) {
+        array_walk($years, function ($year) use (&$monthOptions, $months) {
             $monthsByYear = [];
             array_walk(
                 $months,
-                function($month) use($year, &$monthsByYear) {
+                function ($month) use ($year, &$monthsByYear) {
                     $date = $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT);
                     $monthsByYear[$date] = sfDate::getInstance($date)->format('F') . ' ' . $year;
                 }

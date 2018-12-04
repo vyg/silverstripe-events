@@ -6,16 +6,11 @@ use Page;
 use Voyage\Events\Helpers\sfDate;
 use Voyage\Events\Models\EventDateTime;
 use Voyage\Events\Models\RecurringException;
-use SilverStripe\Assets\Image;
 use SilverStripe\ORM\DataList;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\View\ArrayData;
 use Voyage\Events\Helpers\RecursionReader;
-use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\LabelField;
 use Voyage\Events\Models\RecurringDayOfWeek;
-use SilverStripe\Forms\HeaderField;
 use SilverStripe\View\Requirements;
 use Voyage\Events\Models\RecurringDayOfMonth;
 use SilverStripe\Forms\CheckboxField;
@@ -23,10 +18,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
-use SilverStripe\Forms\GridField\GridFieldDeleteAction;
-use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 
 class EventsPage extends Page
@@ -197,7 +189,6 @@ class EventsPage extends Page
         $eventDateTime = $this->DateTimes()->first();
 
         if ($eventDateTime) {
-
             $date_counter = sfDate::getInstance(time()); // Now
             $end = sfDate::getInstance($eventDateTime->LastStartDate);
 
