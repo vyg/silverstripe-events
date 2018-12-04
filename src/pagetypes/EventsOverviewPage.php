@@ -50,6 +50,8 @@ class EventsOverviewPage extends Page
             TextField::create('DefaultHeader', _t('EventsOverviewPage.DEFAULTHEADER', 'Default header (displays when no date range has been selected)')),
         ]);
 
+        $this->extend('updateCMSFields', $fields);
+
         return $fields;
     }
 
