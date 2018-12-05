@@ -42,15 +42,17 @@ class EventsOverviewPage extends Page
      */
     public function getCMSFields()
     {
+        // Allow users to edit this config in updateCMSFields()
+        $this->beforeUpdateCMSFields(function ($fields) {
+            $configuration = _t('EventsOverviewPage.CONFIGURATION', 'Configuration');
+            $fields->addFieldsToTab("Root.$configuration", [
+                    NumericField::create('DefaultFutureMonths', _t('EventsOverviewPage.DEFAULTFUTUREMONTHS', 'Number number of future months to show in default view'))->addExtraClass('defaultFutureMonths'),
+                    TextField::create('DefaultHeader', _t('EventsOverviewPage.DEFAULTHEADER', 'Default header (displays when no date range has been selected)')),
+                ]);
+        });
+
         $fields = parent::getCMSFields();
 
-        $configuration = _t('EventsOverviewPage.CONFIGURATION', 'Configuration');
-        $fields->addFieldsToTab("Root.$configuration", [
-            NumericField::create('DefaultFutureMonths', _t('EventsOverviewPage.DEFAULTFUTUREMONTHS', 'Number number of future months to show in default view'))->addExtraClass('defaultFutureMonths'),
-            TextField::create('DefaultHeader', _t('EventsOverviewPage.DEFAULTHEADER', 'Default header (displays when no date range has been selected)')),
-        ]);
-
-        $this->extend('updateCMSFields', $fields);
 
         return $fields;
     }
