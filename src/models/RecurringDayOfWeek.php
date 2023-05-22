@@ -51,6 +51,6 @@ class RecurringDayOfWeek extends DataObject
 
     public function getTitle()
     {
-        return strftime("%a", sfDate::getInstance()->nextDay($this->Value)->get());
+        return date("D", sfDate::getInstance()->nextDay($this->Value)->get());
     }
 }
